@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Privacy Awareness Platform</title>
+    <style>
+        /* ============================================
+           CSS Variables & Root Styles
+           ============================================ */
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background-light: #f8fafc;
+            --background-dark: #0f172a;
+            --card-light: #ffffff;
+            --card-dark: #1e293b;
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+            --text-muted-light: #64748b;
+            --text-muted-dark: #94a3b8;
+            --border-light: #e2e8f0;
+            --border-dark: #334155;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        /* ============================================
+           Base Styles
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        /* ============================================
+           Header Styles
+           ============================================ */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='[w3.org](http://www.w3.org/2000/svg)'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .datetime {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ============================================
+           Theme Toggle
+           ============================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            background: var(--card-light);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: var(--card-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* ============================================
+           Main Container & Grid
+           ============================================ */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        /* ============================================
+           Card Styles
+           ============================================ */
+        .card {
+            background: var(--card-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+
+        body.dark-mode .card {
+            background: var(--card-dark);
+            box-shadow: var(--shadow-dark);
+            border-color: var(--border-dark);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        body.dark-mode .card-header {
+            border-bottom-color: var(--border-dark);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-icon.purple {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .card-icon.blue {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+        }
+
+        .card-icon.green {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .card-icon.orange {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+
+        .card-icon.pink {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .card h2 {
+            color: var(--text-dark);
+        }
+
+        /* ============================================
+           Form Elements
+           ============================================ */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted-light);
+            font-size: 0.9rem;
+        }
+
+        body.dark-mode label {
+            color: var(--text-muted-dark);
+        }
+
+        input[type="password"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: var(--background-light);
+            color: var(--text-light);
+        }
+
+        body.dark-mode input[type="password"],
+        body.dark-mode input[type="text"],
+        body.dark-mode select,
+        body.dark-mode textarea {
+            border-color: var(--border-dark);
+            background: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* ============================================
+           Checkbox Styles
+           ============================================ */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--background-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--border-light);
+        }
+
+        body.dark-mode .checkbox-item {
+            background: var(--background-dark);
+            border-color: var(--border-dark);
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--primary-color);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        /* ============================================
+           Radio Styles
+           ============================================ */
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+        }
+
+        /* ============================================
+           Button Styles
+           ============================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn.analyzing {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* ============================================
+           Result Display
+           ============================================ */
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.low-risk {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.1));
+            border: 2px solid var(--success-color);
+        }
+
+        .result.medium-risk {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+            border: 2px solid var(--warning-color);
+        }
+
+        .result.high-risk {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+            border: 2px solid var(--danger-color);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-icon {
+            font-size: 1.5rem;
+        }
+
+        .result-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .result.low-risk .result-title {
+            color: var(--success-color);
+        }
+
+        .result.medium-risk .result-title {
+            color: var(--warning-color);
+        }
+
+        .result.high-risk .result-title {
+            color: var(--danger-color);
+        }
+
+        /* ============================================
+           Score Display
+           ============================================ */
+        .score-display {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: conic-gradient(currentColor var(--score-percent), rgba(255, 255, 255, 0.2) var(--score-percent));
+            border-radius: 50%;
+        }
+
+        .score-circle.low {
+            background: var(--danger-color);
+        }
+
+        .score-circle.medium {
+            background: var(--warning-color);
+        }
+
+        .score-circle.high {
+            background: var(--success-color);
+        }
+
+        /* ============================================
+           Policy Analysis
+           ============================================ */
+        .policy-results {
+            margin-top: 1rem;
+        }
+
+        .policy-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--background-light);
+            border-radius: 8px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        body.dark-mode .policy-item {
+            background: var(--background-dark);
+        }
+
+        .policy-icon {
+            font-size: 1.25rem;
+        }
+
+        /* ============================================
+           Smart Tips Section
+           ============================================ */
+        .tips-container {
+            margin-top: 2rem;
+        }
+
+        .tip-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+        }
+
+        .tip-content h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            color: var(--primary-color);
+        }
+
+        .tip-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted-light);
+        }
+
+        body.dark-mode .tip-content p {
+            color: var(--text-muted-dark);
+        }
+
+        /* ============================================
+           Full Width Card
+           ============================================ */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* ============================================
+           Footer Styles
+           ============================================ */
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        footer .footer-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ============================================
+           Responsive Design
+           ============================================ */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                flex-direction: column;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ============================================
+           Utility Classes
+           ============================================ */
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 1rem;
+        }
+
+        .text-muted {
+            color: var(--text-muted-light);
+        }
+
+        body.dark-mode .text-muted {
+            color: var(--text-muted-dark);
+        }
+        /* ============================================
+           App T&C Search Styles
+           ============================================ */
+        .app-chip {
+            padding: 0.4rem 0.9rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .app-chip:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        body.dark-mode .app-chip {
+            color: #a5b4fc;
+            border-color: #a5b4fc;
+        }
+
+        body.dark-mode .app-chip:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        .suggestion-item {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .suggestion-item {
+            color: var(--text-dark);
+            background: var(--card-dark);
+        }
+
+        .suggestion-item:hover {
+            background: rgba(99,102,241,0.1);
+        }
+
+        .tc-section {
+            margin-bottom: 1rem;
+            padding: 0.85rem;
+            background: var(--background-light);
+            border-radius: 10px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        body.dark-mode .tc-section {
+            background: var(--background-dark);
+        }
+
+        .tc-section.danger {
+            border-left-color: var(--danger-color);
+        }
+
+        .tc-section.safe {
+            border-left-color: var(--success-color);
+        }
+
+        .tc-section-title {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tc-section p {
+            font-size: 0.88rem;
+            color: var(--text-muted-light);
+            margin: 0;
+        }
+
+        body.dark-mode .tc-section p {
+            color: var(--text-muted-dark);
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .risk-badge.high { background: #fee2e2; color: var(--danger-color); }
+        .risk-badge.medium { background: #fef3c7; color: #b45309; }
+        .risk-badge.low { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        🌙
+    </button>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-icon">🛡️</div>
+            <h1>Digital Privacy Awareness Platform</h1>
+            <p>Analyze, understand, and improve your online privacy</p>
+            <div class="datetime" id="datetime"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="grid">
+            <!-- Privacy Score Checker -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon purple">🔐</div>
+                    <h2>Privacy Score Checker</h2>
+                </div>
+                <div class="form-group">
+                    <label for="password">Enter a Password to Analyze</label>
+                    <input type="password" id="password" placeholder="Enter your password">
+                </div>
+                <div class="form-group">
+                    <label for="twoFactor">Two-Factor Authentication Status</label>
+                    <select id="twoFactor">
+                        <option value="none">No 2FA</option>
+                        <option value="sms">SMS-based 2FA</option>
+                        <option value="app">Authenticator App</option>
+                        <option value="hardware">Hardware Key (YubiKey, etc.)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="checkPrivacyScore()">
+                    <span>📊</span> Analyze Privacy Score
+                </button>
+                <div class="result" id="privacyResult">
+                    <div class="score-display">
+                        <div class="score-circle" id="scoreCircle">
+                            <span id="scoreValue">0</span>
+                        </div>
+                        <div class="result-title" id="scoreLevel">Risk Level</div>
+                    </div>
+                    <p id="scoreMessage" class="text-muted"></p>
+                </div>
+            </div>
+
+            <!-- App Permission Risk Analyzer -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">📱</div>
+                    <h2>App Permission Risk Analyzer</h2>
+                </div>
+                <label>Select Permissions Granted to an App:</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permCamera" onchange="updateSmartTips()">
+                        <span>📷 Camera</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permLocation" onchange="updateSmartTips()">
+                        <span>📍 Location</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permContacts" onchange="updateSmartTips()">
+                        <span>👥 Contacts</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permMicrophone" onchange="updateSmartTips()">
+                        <span>🎤 Microphone</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permStorage" onchange="updateSmartTips()">
+                        <span>💾 Storage</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="permCalendar" onchange="updateSmartTips()">
+                        <span>📅 Calendar</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary" onclick="analyzePermissions()">
+                    <span>🔍</span> Analyze Risk
+                </button>
+                <div class="result" id="permissionResult">
+                    <div class="result-header">
+                        <span class="result-icon" id="permIcon">⚠️</span>
+                        <span class="result-title" id="permTitle">Risk Level</span>
+                    </div>
+                    <p id="permMessage"></p>
+                </div>
+            </div>
+
+            <!-- Website Login Risk Checker -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">🌐</div>
+                    <h2>Website Login Risk Checker</h2>
+                </div>
+                <div class="form-group">
+                    <label>Is the website using HTTPS?</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="https" value="yes" checked onchange="updateSmartTips()">
+                            <span>✅ Yes (HTTPS)</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="https" value="no" onchange="updateSmartTips()">
+                            <span>❌ No (HTTP)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Are you on public WiFi?</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="wifi" value="yes" onchange="updateSmartTips()">
+                            <span>📶 Yes, public WiFi</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="wifi" value="no" checked onchange="updateSmartTips()">
+                            <span>🏠 No, private network</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Using "Remember Me" option?</label>
+                    <div class="radio-group">
+                        <label class="radio-item">
+                            <input type="radio" name="remember" value="yes" onchange="updateSmartTips()">
+                            <span>✓ Yes</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="remember" value="no" checked onchange="updateSmartTips()">
+                            <span>✗ No</span>
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="checkLoginRisk()">
+                    <span>🔒</span> Check Login Risk
+                </button>
+                <div class="result" id="loginResult">
+                    <div class="result-header">
+                        <span class="result-icon" id="loginIcon">⚠️</span>
+                        <span class="result-title" id="loginTitle">Risk Level</span>
+                    </div>
+                    <p id="loginMessage"></p>
+                </div>
+            </div>
+
+            <!-- App Terms & Conditions Explainer -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">📋</div>
+                    <h2>App T&amp;C Explainer</h2>
+                </div>
+                <div class="form-group">
+                    <label for="appSearch">App ka naam search karo:</label>
+                    <div style="position:relative;">
+                        <input type="text" id="appSearch" placeholder="e.g. WhatsApp, Instagram, Facebook..." autocomplete="off" oninput="showAppSuggestions(this.value)" onkeydown="if(event.key==='Enter') searchApp()">
+                        <div id="appSuggestions" style="position:absolute;top:100%;left:0;right:0;background:var(--card-light);border:2px solid var(--primary-color);border-radius:0 0 10px 10px;z-index:100;display:none;overflow:hidden;"></div>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;">
+                        <button class="app-chip" onclick="selectApp('WhatsApp')">💬 WhatsApp</button>
+                        <button class="app-chip" onclick="selectApp('Twitter')">🐦 Twitter</button>
+                        <button class="app-chip" onclick="selectApp('Facebook')">📘 Facebook</button>
+                        <button class="app-chip" onclick="selectApp('Instagram')">📸 Instagram</button>
+                        <button class="app-chip" onclick="selectApp('Snapchat')">👻 Snapchat</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="searchApp()">
+                    <span>🔍</span> Terms Explain Karo
+                </button>
+                <div class="result show medium-risk" id="appTCResult" style="display:none;">
+                    <div class="result-header">
+                        <span class="result-icon" id="appTCIcon">📋</span>
+                        <span class="result-title" id="appTCTitle">App Analysis</span>
+                    </div>
+                    <div id="appTCContent"></div>
+                </div>
+            </div>
+
+            <!-- Smart Tips Generator (Full Width) -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <div class="card-icon pink">💡</div>
+                    <h2>Smart Privacy Tips</h2>
+                </div>
+                <p class="text-muted">Personalized recommendations based on your inputs above:</p>
+                <div class="tips-container" id="tipsContainer">
+                    <div class="tip-card">
+                        <div class="tip-icon">👋</div>
+                        <div class="tip-content">
+                            <h4>Welcome!</h4>
+                            <p>Use the tools above to get personalized privacy tips based on your settings and
+                                behaviors.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-icon">🛡️</div>
+        <p><strong>Digital Privacy Awareness Platform</strong></p>
+        <p class="mt-1">Empowering users to take control of their digital privacy</p>
+    </footer>
+
+    <script>
+        /* ============================================
+           Initialization
+           ============================================ */
+        document.addEventListener('DOMContentLoaded', function () {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            loadThemePreference();
+        });
+
+        /* ============================================
+           Date/Time Display
+           ============================================ */
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('datetime').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        /* ============================================
+           Theme Toggle Functionality
+           ============================================ */
+        const themeToggle = document.getElementById('themeToggle');
+
+        themeToggle.addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', isDark);
+        });
+
+        function loadThemePreference() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            }
+        }
+
+        /* ============================================
+           Privacy Score Checker
+           ============================================ */
+        function checkPrivacyScore() {
+            const password = document.getElementById('password').value;
+            const twoFactor = document.getElementById('twoFactor').value;
+
+            // Calculate password strength (0-60 points)
+            let passwordScore = calculatePasswordStrength(password);
+
+            // Add 2FA bonus (0-40 points)
+            let twoFactorBonus = 0;
+            switch (twoFactor) {
+                case 'hardware': twoFactorBonus = 40; break;
+                case 'app': twoFactorBonus = 30; break;
+                case 'sms': twoFactorBonus = 15; break;
+                default: twoFactorBonus = 0;
+            }
+
+            let totalScore = Math.min(100, passwordScore + twoFactorBonus);
+
+            // Determine risk level
+            let riskLevel, riskClass, message;
+            if (totalScore >= 70) {
+                riskLevel = 'Low Risk - Excellent!';
+                riskClass = 'low-risk';
+                message = 'Your security practices are strong. Keep using unique passwords and maintaining 2FA.';
+            } else if (totalScore >= 40) {
+                riskLevel = 'Medium Risk - Needs Improvement';
+                riskClass = 'medium-risk';
+                message = 'Consider strengthening your password and enabling stronger 2FA methods.';
+            } else {
+                riskLevel = 'High Risk - Action Required!';
+                riskClass = 'high-risk';
+                message = 'Your account is vulnerable. Use a stronger password with 2FA immediately.';
+            }
+
+            // Display result with animation
+            const resultDiv = document.getElementById('privacyResult');
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreLevel = document.getElementById('scoreLevel');
+            const scoreMessage = document.getElementById('scoreMessage');
+
+            resultDiv.className = 'result show ' + riskClass;
+            scoreCircle.className = 'score-circle ' + (totalScore >= 70 ? 'high' : totalScore >= 40 ? 'medium' : 'low');
+
+            // Animate score counting
+            animateValue(scoreValue, 0, totalScore, 1000);
+            scoreLevel.textContent = riskLevel;
+            scoreMessage.textContent = message;
+
+            updateSmartTips();
+        }
+
+        function calculatePasswordStrength(password) {
+            if (!password) return 0;
+
+            let score = 0;
+
+            // Length scoring
+            if (password.length >= 8) score += 10;
+            if (password.length >= 12) score += 10;
+            if (password.length >= 16) score += 10;
+
+            // Character variety
+            if (/[a-z]/.test(password)) score += 5;
+            if (/[A-Z]/.test(password)) score += 10;
+            if (/[0-9]/.test(password)) score += 10;
+            if (/[^a-zA-Z0-9]/.test(password)) score += 15;
+
+            // Penalty for common patterns
+            if (/^[a-zA-Z]+$/.test(password)) score -= 10;
+            if (/^[0-9]+$/.test(password)) score -= 15;
+            if (/(.)\1{2,}/.test(password)) score -= 10; // Repeated characters
+
+            return Math.max(0, Math.min(60, score));
+        }
+
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                element.textContent = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        /* ============================================
+           App Permission Risk Analyzer
+           ============================================ */
+        function analyzePermissions() {
+            const permissions = [
+                { id: 'permCamera', name: 'Camera', risk: 3 },
+                { id: 'permLocation', name: 'Location', risk: 4 },
+                { id: 'permContacts', name: 'Contacts', risk: 3 },
+                { id: 'permMicrophone', name: 'Microphone', risk: 4 },
+                { id: 'permStorage', name: 'Storage', risk: 2 },
+                { id: 'permCalendar', name: 'Calendar', risk: 2 }
+            ];
+
+            let totalRisk = 0;
+            let grantedPermissions = [];
+
+            permissions.forEach(perm => {
+                if (document.getElementById(perm.id).checked) {
+                    totalRisk += perm.risk;
+                    grantedPermissions.push(perm.name);
+                }
+            });
+
+            let riskLevel, riskClass, icon, message;
+
+            if (totalRisk === 0) {
+                riskLevel = 'No Risk - No Permissions';
+                riskClass = 'low-risk';
+                icon = '✅';
+                message = 'No sensitive permissions granted. This is the safest configuration.';
+            } else if (totalRisk <= 5) {
+                riskLevel = 'Low Risk';
+                riskClass = 'low-risk';
+                icon = '✅';
+                message = `Minimal permissions granted (${grantedPermissions.join(', ')}). This appears reasonable for most apps.`;
+            } else if (totalRisk <= 10) {
+                riskLevel = 'Medium Risk';
+                riskClass = 'medium-risk';
+                icon = '⚠️';
+                message = `Multiple permissions granted (${grantedPermissions.join(', ')}). Ensure these are necessary for the app's core functionality.`;
+            } else {
+                riskLevel = 'High Risk';
+                riskClass = 'high-risk';
+                icon = '🚨';
+                message = `Extensive permissions granted (${grantedPermissions.join(', ')}). This level of access should only be given to highly trusted apps.`;
+            }
+
+            const resultDiv = document.getElementById('permissionResult');
+            resultDiv.className = 'result show ' + riskClass;
+            document.getElementById('permIcon').textContent = icon;
+            document.getElementById('permTitle').textContent = riskLevel;
+            document.getElementById('permMessage').textContent = message;
+
+            updateSmartTips();
+        }
+
+        /* ============================================
+           Website Login Risk Checker
+           ============================================ */
+        function checkLoginRisk() {
+            const isHttps = document.querySelector('input[name="https"]:checked').value === 'yes';
+            const isPublicWifi = document.querySelector('input[name="wifi"]:checked').value === 'yes';
+            const rememberMe = document.querySelector('input[name="remember"]:checked').value === 'yes';
+
+            let riskPoints = 0;
+            let risks = [];
+
+            if (!isHttps) {
+                riskPoints += 40;
+                risks.push('Site uses unencrypted HTTP - data can be intercepted');
+            }
+
+            if (isPublicWifi) {
+                riskPoints += 30;
+                risks.push('Public WiFi increases risk of man-in-the-middle attacks');
+            }
+
+            if (rememberMe) {
+                riskPoints += 15;
+                risks.push('"Remember Me" stores credentials that could be accessed by others');
+            }
+
+            if (!isHttps && isPublicWifi) {
+                riskPoints += 15;
+                risks.push('Combined HTTP + public WiFi is extremely dangerous');
+            }
+
+            let riskLevel, riskClass, icon, message;
+
+            if (riskPoints === 0) {
+                riskLevel = 'Low Risk - Safe to Proceed';
+                riskClass = 'low-risk';
+                icon = '✅';
+                message = 'Your login conditions are secure. The connection is encrypted and you\'re on a private network.';
+            } else if (riskPoints <= 30) {
+                riskLevel = 'Medium Risk - Proceed with Caution';
+                riskClass = 'medium-risk';
+                icon = '⚠️';
+                message = 'Minor concerns: ' + risks.join('. ') + '.';
+            } else {
+                riskLevel = 'High Risk - Not Recommended';
+                riskClass = 'high-risk';
+                icon = '🚨';
+                message = 'Significant security risks detected: ' + risks.join('. ') + '. Consider waiting for a more secure connection.';
+            }
+
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.className = 'result show ' + riskClass;
+            document.getElementById('loginIcon').textContent = icon;
+            document.getElementById('loginTitle').textContent = riskLevel;
+            document.getElementById('loginMessage').textContent = message;
+
+            updateSmartTips();
+        }
+
+        /* ============================================
+           Privacy Policy Simplifier
+           ============================================ */
+        function analyzePolicy() {
+            const policyText = document.getElementById('policyText').value.toLowerCase();
+
+            if (!policyText.trim()) {
+                alert('Please paste a privacy policy to analyze.');
+                return;
+            }
+
+            // Define keyword categories and their implications
+            const keywords = [
+                {
+                    terms: ['location', 'gps', 'geolocation', 'geographic'],
+                    icon: '📍',
+                    title: 'Location Tracking',
+                    description: 'This service may collect and use your location data.'
+                },
+                {
+                    terms: ['cookie', 'cookies', 'tracking pixel', 'web beacon'],
+                    icon: '🍪',
+                    title: 'Cookies & Tracking',
+                    description: 'Cookies are used to track your browsing behavior and preferences.'
+                },
+                {
+                    terms: ['third party', 'third-party', 'partners', 'affiliates', 'advertisers'],
+                    icon: '🤝',
+                    title: 'Third-Party Sharing',
+                    description: 'Your data may be shared with external companies or partners.'
+                },
+                {
+                    terms: ['advertising', 'targeted ads', 'personalized ads', 'marketing'],
+                    icon: '📢',
+                    title: 'Targeted Advertising',
+                    description: 'Your data is used to show you personalized advertisements.'
+                },
+                {
+                    terms: ['biometric', 'fingerprint', 'face recognition', 'facial'],
+                    icon: '👆',
+                    title: 'Biometric Data',
+                    description: 'Sensitive biometric information may be collected.'
+                },
+                {
+                    terms: ['sell', 'sold', 'monetize', 'revenue from data'],
+                    icon: '💰',
+                    title: 'Data Monetization',
+                    description: 'Your personal data may be sold or used for profit.'
+                },
+                {
+                    terms: ['indefinitely', 'permanent', 'retain forever', 'no deletion'],
+                    icon: '♾️',
+                    title: 'Indefinite Retention',
+                    description: 'Your data may be stored permanently without automatic deletion.'
+                },
+                {
+                    terms: ['children', 'minors', 'under 13', 'coppa', 'parental'],
+                    icon: '👶',
+                    title: 'Children\'s Data',
+                    description: 'This policy addresses the collection of data from minors.'
+                },
+                {
+                    terms: ['encryption', 'encrypted', 'secure', 'ssl', 'tls'],
+                    icon: '🔒',
+                    title: 'Security Measures',
+                    description: 'The service mentions security practices to protect your data.'
+                },
+                {
+                    terms: ['delete', 'erasure', 'remove your data', 'right to be forgotten'],
+                    icon: '🗑️',
+                    title: 'Data Deletion Rights',
+                    description: 'You may have options to request deletion of your data.'
+                }
+            ];
+
+            let foundItems = [];
+
+            keywords.forEach(category => {
+                const found = category.terms.some(term => policyText.includes(term));
+                if (found) {
+                    foundItems.push(category);
+                }
+            });
+
+            // Display results
+            const resultDiv = document.getElementById('policyResult');
+            const itemsContainer = document.getElementById('policyItems');
+            const summaryElement = document.getElementById('policySummary');
+
+            itemsContainer.innerHTML = '';
+
+            if (foundItems.length === 0) {
+                itemsContainer.innerHTML = '<p class="text-muted">No specific privacy concerns detected in the provided text. The policy may use different terminology, or more text may be needed for analysis.</p>';
+                summaryElement.textContent = '';
+            } else {
+                foundItems.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'policy-item';
+                    itemDiv.innerHTML = `
+                        <span class="policy-icon">${item.icon}</span>
+                        <div>
+                            <strong>${item.title}</strong>
+                            <p class="text-muted" style="margin: 0; font-size: 0.9rem;">${item.description}</p>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(itemDiv);
+                });
+
+                let concernLevel = foundItems.length <= 3 ? 'relatively standard' :
+                    foundItems.length <= 6 ? 'moderately extensive' : 'very comprehensive';
+
+                summaryElement.textContent = `Summary: This privacy policy contains ${concernLevel} data collection practices with ${foundItems.length} notable categories identified. Review each item above to understand how your data may be used.`;
+            }
+
+            resultDiv.className = 'result show medium-risk';
+        }
+
+        /* ============================================
+           Smart Tips Generator
+           ============================================ */
+        function updateSmartTips() {
+            const tipsContainer = document.getElementById('tipsContainer');
+            let tips = [];
+
+            // Check public WiFi
+            const wifiRadio = document.querySelector('input[name="wifi"]:checked');
+            if (wifiRadio && wifiRadio.value === 'yes') {
+                tips.push({
+                    icon: '📶',
+                    title: 'Public WiFi Warning',
+                    message: 'You indicated you\'re on public WiFi. Consider using a VPN to encrypt your connection and protect your data from potential eavesdroppers.'
+                });
+            }
+
+            // Check HTTP
+            const httpsRadio = document.querySelector('input[name="https"]:checked');
+            if (httpsRadio && httpsRadio.value === 'no') {
+                tips.push({
+                    icon: '🔓',
+                    title: 'Unencrypted Connection',
+                    message: 'HTTP websites don\'t encrypt data. Avoid entering passwords, credit cards, or personal information on non-HTTPS sites.'
+                });
+            }
+
+            // Check Remember Me
+            const rememberRadio = document.querySelector('input[name="remember"]:checked');
+            if (rememberRadio && rememberRadio.value === 'yes') {
+                tips.push({
+                    icon: '💾',
+                    title: 'Remember Me Enabled',
+                    message: 'Using "Remember Me" on shared or public computers is risky. Only use this feature on your personal, secured devices.'
+                });
+            }
+
+            // Check Location permission
+            if (document.getElementById('permLocation').checked) {
+                tips.push({
+                    icon: '📍',
+                    title: 'Location Access Granted',
+                    message: 'Apps with location access can track your movements. Consider granting "While Using" access instead of "Always" when possible.'
+                });
+            }
+
+            // Check Microphone permission
+            if (document.getElementById('permMicrophone').checked) {
+                tips.push({
+                    icon: '🎤',
+                    title: 'Microphone Access Granted',
+                    message: 'Microphone access could potentially be used to listen to conversations. Regularly audit which apps have this permission.'
+                });
+            }
+
+            // Check Camera permission
+            if (document.getElementById('permCamera').checked) {
+                tips.push({
+                    icon: '📷',
+                    title: 'Camera Access Granted',
+                    message: 'Camera access is sensitive. Some users cover their cameras when not in use as an extra precaution.'
+                });
+            }
+
+            // Check Contacts permission
+            if (document.getElementById('permContacts').checked) {
+                tips.push({
+                    icon: '👥',
+                    title: 'Contacts Access Granted',
+                    message: 'Apps with contacts access can read all your saved phone numbers and emails. This data is often used for social graphs and marketing.'
+                });
+            }
+
+            // Check 2FA status
+            const twoFactorSelect = document.getElementById('twoFactor');
+            if (twoFactorSelect.value === 'none') {
+                tips.push({
+                    icon: '🔐',
+                    title: 'Enable Two-Factor Authentication',
+                    message: 'You haven\'t enabled 2FA. Even strong passwords can be compromised. Enable 2FA on all important accounts for an extra security layer.'
+                });
+            } else if (twoFactorSelect.value === 'sms') {
+                tips.push({
+                    icon: '📱',
+                    title: 'Upgrade Your 2FA',
+                    message: 'SMS-based 2FA is better than nothing, but it\'s vulnerable to SIM-swapping attacks. Consider switching to an authenticator app or hardware key.'
+                });
+            }
+
+            // Default tip if no specific conditions
+            if (tips.length === 0) {
+                tips.push({
+                    icon: '✨',
+                    title: 'Great Privacy Practices!',
+                    message: 'Based on your current inputs, you\'re following good privacy practices. Continue to stay vigilant and review app permissions regularly.'
+                });
+            }
+
+            // Render tips
+            tipsContainer.innerHTML = tips.map(tip => `
+                <div class="tip-card">
+                    <div class="tip-icon">${tip.icon}</div>
+                    <div class="tip-content">
+                        <h4>${tip.title}</h4>
+                        <p>${tip.message}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ============================================
+           App T&C Explainer
+           ============================================ */
+        const appDatabase = {
+            'whatsapp': {
+                name: 'WhatsApp', icon: '💬', overallRisk: 'medium',
+                summary: 'WhatsApp Meta ke baad se kaafi data collect karta hai. End-to-end encryption hai lekin metadata aur contacts collect hote hain.',
+                sections: [
+                    { icon: '📱', title: 'Contact List Upload', risk: 'high', desc: 'WhatsApp aapka poora contact list upload karta hai Meta ke servers par — chahe woh WhatsApp use karein ya nahi.' },
+                    { icon: '📍', title: 'Location Tracking', risk: 'high', desc: 'Live location aur approximate location collect ki jaati hai. Background location on ho toh bina bataye track ho sakta hai.' },
+                    { icon: '📊', title: 'Usage Metadata', risk: 'medium', desc: 'Message ka time, frequency, aur kab app open kiya — yeh sab record hota hai, chahe message encrypted ho.' },
+                    { icon: '🔗', title: 'Meta/Facebook Data Sharing', risk: 'high', desc: '2021 se WhatsApp aur Facebook ke beech data share hota hai — aapki activity Facebook ads ke liye use ho sakti hai.' },
+                    { icon: '🔒', title: 'End-to-End Encryption', risk: 'low', desc: 'Messages aur calls encrypted hain. Lekin Google Drive/iCloud backups default mein encrypted nahi hote.' },
+                    { icon: '⚠️', title: 'Main Risk', risk: 'high', desc: 'Meta ke saath advertising data sharing, contact harvesting, aur unencrypted cloud backups sabse badi dikkatein hain.' }
+                ]
+            },
+            'twitter': {
+                name: 'Twitter / X', icon: '🐦', overallRisk: 'medium',
+                summary: 'Twitter (ab X) aapki tweets, likes, aur browsing se detailed profile banata hai jo advertisers ko becha jaata hai.',
+                sections: [
+                    { icon: '📢', title: 'Public Posts by Default', risk: 'high', desc: 'Sare tweets default par public hain aur permanently index hote hain. Delete karne par bhi kuch time accessible rehte hain.' },
+                    { icon: '🎯', title: 'Targeted Advertising', risk: 'high', desc: 'Likes, retweets, aur search history se detailed interest profile banata hai jo advertisers ko sell ki jaati hai.' },
+                    { icon: '📍', title: 'IP se Location Track', risk: 'medium', desc: 'Tweet mein tag optional hai lekin IP address se approximate location always track hoti hai.' },
+                    { icon: '🔗', title: 'Third-Party App Access', risk: 'medium', desc: 'Agar kisi app ko Twitter login se connect kiya hai toh woh app aapka data access kar sakta hai.' },
+                    { icon: '🧠', title: 'Behavior Profiling', risk: 'high', desc: 'Aap kya padhte hain, kab padhte hain, kitna time lagate hain — sab track hota hai for psychological profiling.' },
+                    { icon: '⚠️', title: 'Main Risk', risk: 'high', desc: '2022-2024 mein Elon Musk ke baad privacy policies frequent change hui hain aur protections kamzor hue hain.' }
+                ]
+            },
+            'facebook': {
+                name: 'Facebook', icon: '📘', overallRisk: 'high',
+                summary: 'Facebook duniya ki sabse aggressive data collector hai. Har activity, har click, offline behavior bhi track hoti hai.',
+                sections: [
+                    { icon: '👁️', title: 'Shadow Profiling', risk: 'high', desc: 'Facebook un logon ka bhi profile banata hai jo Facebook use nahi karte — friends ke contacts aur website pixels ki wajah se.' },
+                    { icon: '🛒', title: 'Offline Purchase Tracking', risk: 'high', desc: 'Retail stores aur credit card companies se data khareedta hai — physically kya buy kiya woh bhi track hota hai.' },
+                    { icon: '📸', title: 'Face Recognition Data', risk: 'high', desc: 'Facebook photos mein automatically faces detect karta tha. Kuch regions mein band hai lekin data collect hua tha.' },
+                    { icon: '🔗', title: 'Cross-Site Tracking (Pixel)', risk: 'high', desc: 'Kisi bhi website par Facebook Like button ya Pixel hai, wahan se activity Facebook ko jaati hai — login ke bina bhi.' },
+                    { icon: '📞', title: 'Call & SMS Logs (Android)', risk: 'high', desc: 'Android par Facebook app ne historically call logs aur SMS meta-data access kiya hai agar permission di ho.' },
+                    { icon: '⚠️', title: 'Main Risk', risk: 'high', desc: 'Cambridge Analytica jaisi ghatnaein dikhati hain ki data political manipulation ke liye bhi use ho sakta hai.' }
+                ]
+            },
+            'instagram': {
+                name: 'Instagram', icon: '📸', overallRisk: 'high',
+                summary: 'Instagram (Meta) photos, videos, aur behavior se detailed profile banata hai jo Facebook advertising ko feeda karta hai.',
+                sections: [
+                    { icon: '🖼️', title: 'Photo & Video AI Analysis', risk: 'high', desc: 'Har photo analyze hoti hai — objects, locations, chehre AI se detect hote hain. Profiling mein use hota hai.' },
+                    { icon: '📍', title: 'Location in Photos', risk: 'high', desc: 'Photo mein embedded GPS data (EXIF) upload hone par extract ho sakta hai. Permanently store hoti hai.' },
+                    { icon: '⏱️', title: 'Scroll & View Time', risk: 'medium', desc: 'Kis post par kitna time rukte hain, kisko skip karte hain — yeh "engagement data" psychological profile banata hai.' },
+                    { icon: '🛍️', title: 'Shopping Behavior', risk: 'medium', desc: 'Instagram Shopping ke through buying interest Meta ke ads system ko directly jaati hai.' },
+                    { icon: '🔗', title: 'Facebook Data Merge', risk: 'high', desc: 'Dono accounts link hone par data merge hota hai — zyada detailed profile banta hai advertisers ke liye.' },
+                    { icon: '⚠️', title: 'Main Risk', risk: 'high', desc: 'Teens par psychological impact — khud Meta ke internal research ne body image issues aur mental health risk maana tha.' }
+                ]
+            },
+            'snapchat': {
+                name: 'Snapchat', icon: '👻', overallRisk: 'medium',
+                summary: 'Snapchat temporary messages ka illusion deta hai lekin data retain karta hai — especially Snap Map aur AI chatbot features.',
+                sections: [
+                    { icon: '💨', title: 'Snaps Delete ka Myth', risk: 'high', desc: 'Snaps "disappear" hote hain screen se — lekin Snapchat ke servers par 30 din tak reh sakte hain. Screenshot possible hai.' },
+                    { icon: '🗺️', title: 'Snap Map Real-Time Location', risk: 'high', desc: 'Snap Map aapki exact location real-time mein friends ko dikhata hai. Ghost Mode off ho toh bahut dangerous.' },
+                    { icon: '🤖', title: 'My AI Chatbot Data', risk: 'high', desc: '"My AI" feature aapki conversations save karta hai product improvement ke liye. Yeh data share bhi ho sakta hai.' },
+                    { icon: '📷', title: 'Camera Always-On Permission', risk: 'medium', desc: 'Camera-first app hai — permission lagbhag hamesha required hai. Background mein access possible hai.' },
+                    { icon: '🎯', title: 'Young Users Targeting', risk: 'high', desc: 'Young audience (teens) hone ki wajah se regulators ki khaas nazar hai. Age-targeted ads ka concern.' },
+                    { icon: '⚠️', title: 'Main Risk', risk: 'high', desc: 'Snap Map location sharing, AI chatbot data storage, aur teen users ka sensitive data — in par khaas dhyan rakhein.' }
+                ]
+            }
+        };
+
+        const appList = ['WhatsApp', 'Twitter', 'Facebook', 'Instagram', 'Snapchat'];
+
+        function showAppSuggestions(val) {
+            const box = document.getElementById('appSuggestions');
+            if (!val.trim()) { box.style.display = 'none'; return; }
+            const matches = appList.filter(a => a.toLowerCase().includes(val.toLowerCase()));
+            if (matches.length === 0) { box.style.display = 'none'; return; }
+            box.innerHTML = matches.map(a => `<div class="suggestion-item" onclick="selectApp('${a}')">${a}</div>`).join('');
+            box.style.display = 'block';
+        }
+
+        function selectApp(name) {
+            document.getElementById('appSearch').value = name;
+            document.getElementById('appSuggestions').style.display = 'none';
+            searchApp();
+        }
+
+        function searchApp() {
+            const query = document.getElementById('appSearch').value.trim().toLowerCase();
+            document.getElementById('appSuggestions').style.display = 'none';
+            const app = appDatabase[query] || Object.values(appDatabase).find(a => a.name.toLowerCase().includes(query));
+            const resultDiv = document.getElementById('appTCResult');
+            const iconEl = document.getElementById('appTCIcon');
+            const titleEl = document.getElementById('appTCTitle');
+            const contentEl = document.getElementById('appTCContent');
+            if (!app) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result show medium-risk';
+                iconEl.textContent = '❓';
+                titleEl.textContent = 'App nahi mila';
+                contentEl.innerHTML = '<p style="color:var(--text-muted-light)">Abhi sirf WhatsApp, Twitter, Facebook, Instagram aur Snapchat available hain. Ek chip select karo.</p>';
+                return;
+            }
+            const riskClass = app.overallRisk === 'high' ? 'high-risk' : app.overallRisk === 'low' ? 'low-risk' : 'medium-risk';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result show ' + riskClass;
+            iconEl.textContent = app.icon;
+            titleEl.textContent = app.name + ' — T&C Analysis';
+            const sectionsHTML = app.sections.map(s => `
+                <div class="tc-section ${s.risk === 'high' ? 'danger' : s.risk === 'low' ? 'safe' : ''}">
+                    <div class="tc-section-title">
+                        <span>${s.icon}</span>
+                        <span>${s.title}</span>
+                        <span class="risk-badge ${s.risk}">${s.risk === 'high' ? '⚠️ High Risk' : s.risk === 'low' ? '✅ Safe' : '🟡 Medium'}</span>
+                    </div>
+                    <p>${s.desc}</p>
+                </div>
+            `).join('');
+            contentEl.innerHTML = `<p style="margin-bottom:1rem;font-size:0.9rem;"><strong>Summary:</strong> ${app.summary}</p>${sectionsHTML}`;
+        }
+    </script>
+</body>
+</html>
